@@ -7,7 +7,10 @@ pipeline {
     stages {
         stage('init') {
             steps {
-                code = load "script.groovy"
+               script
+               {
+                 code = load "script.groovy"
+               }
             }
         }
         stage('Build package') {
