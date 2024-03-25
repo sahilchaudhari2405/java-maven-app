@@ -1,53 +1,47 @@
-def gv
-
 pipeline {
     agent any
-    parameters {
-        string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
-    }
+    
     stages {
-        stage('init') {
+        stage('Build Jar') {
             steps {
                 script {
-                    gv = load 'script.groovy'
+                    echo 'Building application jar...'
+                    buildJar()
                 }
             }
         }
-        stage('Build package') {
+        
+        stage('Build Docker Image') {
+            parameters {
+                string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
+            }
             steps {
                 script {
-                    gv.buildJar()
+                    echo "Building Docker image with version ${params.IMAGE_VERSION}..."
+                    buildImage(params.IMAGE_VERSION)
                 }
             }
         }
-        stage('Build Image') {
-            steps {
-                script {
-                   gv.buildImage(params.IMAGE_VERSION)
-                }
+        
+        stage('Push Docker Image') {
+            parameters {
+                string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
             }
-        }
-        stage('Login to Docker and Push Image') {
             steps {
                 script {
-                   gv.loginAndpush(params.IMAGE_VERSION)
-                }
-            }
-        }
-        stage('deploy') {
-            steps {
-                script {
-                    echo 'deploy'
+                    echo "Pushing Docker image with version ${params.IMAGE_VERSION}..."
+                    loginAndpush(params.IMAGE_VERSION)
                 }
             }
         }
     }
+    
     post {
         success {
-            echo 'Image build and push succeeded!'
+            echo 'Pipeline succeeded!'
         }
         failure {
-            echo 'Image build and push failed!'
+            echo 'Pipeline failed!'
         }
     }
 }
