@@ -1,4 +1,4 @@
-def gv
+def code
 
 pipeline {
     agent any
@@ -6,31 +6,27 @@ pipeline {
         string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
     }
     stages {
-        // stage('init') {
-        //     steps {
-        //         script {
-        //             gv = load 'script.groovy'
-        //         }
-        //     }
-        // }
+        stage('Load') {
+            code = load 'script.groovy'
+        }
         stage('Build package') {
             steps {
                 script {
-                    buildJar()
+                    code.buildJar()
                 }
             }
         }
         stage('Build Image') {
             steps {
                 script {
-                    buildImage(params.IMAGE_VERSION)
+                    code.buildImage(params.IMAGE_VERSION)
                 }
             }
         }
         stage('Login to Docker and Push Image') {
             steps {
                 script {
-                    loginAndpush(params.IMAGE_VERSION)
+                    code.loginAndpush(params.IMAGE_VERSION)
                 }
             }
         }
