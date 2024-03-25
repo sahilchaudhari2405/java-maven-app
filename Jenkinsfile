@@ -1,11 +1,12 @@
 def gv
+
 pipeline {
     agent any
     parameters {
         string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
     }
     stages {
-         stage('init') {
+        stage('init') {
             steps {
                 script {
                     gv = load 'script.groovy'
@@ -22,7 +23,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                   gv. buildImage(params.IMAGE_VERSION)
+                   gv.buildImage(params.IMAGE_VERSION)
                 }
             }
         }
@@ -33,13 +34,11 @@ pipeline {
                 }
             }
         }
-        stage('deploy')
-        {
-            step{
-               script
-               {
-                 echo 'deploy'
-               }
+        stage('deploy') {
+            steps {
+                script {
+                    echo 'deploy'
+                }
             }
         }
     }
