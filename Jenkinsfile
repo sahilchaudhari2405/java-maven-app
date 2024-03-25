@@ -1,47 +1,53 @@
+def gv
+
 pipeline {
     agent any
-    
+    parameters {
+        string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
+    }
     stages {
-        stage('Build Jar') {
+        // stage('init') {
+        //     steps {
+        //         script {
+        //             gv = load 'script.groovy'
+        //         }
+        //     }
+        // }
+        stage('Build package') {
             steps {
                 script {
-                    echo 'Building application jar...'
                     buildJar()
                 }
             }
         }
-        
-        stage('Build Docker Image') {
-            parameters {
-                string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
-            }
+        stage('Build Image') {
             steps {
                 script {
-                    echo "Building Docker image with version ${params.IMAGE_VERSION}..."
                     buildImage(params.IMAGE_VERSION)
                 }
             }
         }
-        
-        stage('Push Docker Image') {
-            parameters {
-                string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
-            }
+        stage('Login to Docker and Push Image') {
             steps {
                 script {
-                    echo "Pushing Docker image with version ${params.IMAGE_VERSION}..."
                     loginAndpush(params.IMAGE_VERSION)
                 }
             }
         }
+        stage('deploy') {
+            steps {
+                script {
+                    echo 'deploy'
+                }
+            }
+        }
     }
-    
     post {
         success {
-            echo 'Pipeline succeeded!'
+            echo 'Image build and push succeeded!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Image build and push failed!'
         }
     }
 }
