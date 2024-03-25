@@ -52,54 +52,40 @@
 //     }
 // }
 def gv
-pipeline { 
+pipeline {
     agent any
-           parameters {
-            choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
-            booleanParam(name: 'executeTests', defaultValue: true, description: '')
-           }
+    parameters {
+        string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
+    }
 
     stages {
-        stage("init") {
+        stage('init') {
             steps {
                 script {
-                    gv = load "script.groovy"
+                    gv = load 'script.groovy'
                 }
             }
         }
-        stage("build") {
+        stage('build app') {
             steps {
                 script {
-                 
                     gv.buildApp()
                 }
-
             }
         }
-        stage("test") {
-            when {
-             
-                expression {
-                    params.executeTests
-                }
-            }
+        stage('build image') {
             steps {
                 script {
-                    gv.testApp()
+                    gv.buildImage(params.IMAGE_VERSION)
                 }
             }
         }
-        stage ("deploy") {
+        stage('deploy') {
             steps {
-                expression {
-                    env.BRANCH_NAME == 'feature/jenkins-jobs'
-                }
-                  script {
-                gv.deployApp()
-                
+                script {
+                    gv.deployApp(params.IMAGE_VERSION)
                 }
             }
-          
         }
     }
 }
