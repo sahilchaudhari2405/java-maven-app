@@ -1,17 +1,13 @@
 def code
-
 pipeline {
     agent any
     parameters {
         string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
     }
     stages {
-        stage('init') {
+        stage('Load') {
             steps {
-                script
-                {
-                    code = load "script.groovy"
-                }
+                code = load "script.groovy"
             }
         }
         stage('Build package') {
@@ -35,10 +31,10 @@ pipeline {
                 }
             }
         }
-        stage('deploy') {
+        stage('Deploy') {
             steps {
                 script {
-                    echo 'deploy'
+                    echo 'Deploy'
                 }
             }
         }
