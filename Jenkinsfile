@@ -1,49 +1,54 @@
-
-
+def gv
 pipeline {
     agent any
-    tools{
-        maven 'Maven'
-    } 
+    parameters {
+        string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
+    }
     stages {
-        stage('Build-jar') {
-            steps {
-                script {
-                    echo(message: 'build application ')
-                    sh 'mvn package'
-                }
-            }
-        } 
-        stage('Build image') {
-            steps {
-                script {
-                    echo(message: 'Build Docker image')
-                    withCredentials([usernamePassword(credentialsId: 'docker-repo', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-                        sh "docker build -t sahilchaudhari2405/my-repo:jma-2.1 ."
-                        sh "docker push sahilchaudhari2405/my-repo:jma-2.1"
-                    }
+        stage(name: 'init')
+        {
+            step
+            {
+                script
+                {
+                    gv = load(path: 'script.groovy')
                 }
             }
         }
-         stage('deploy') {
+        stage('Build package') {
             steps {
                 script {
-                    echo(message: 'deploy')
+                    gv.buildJar()
                 }
             }
-         }
-
+        }
+        stage('Build Image') {
+            steps {
+                script {
+                   gv. buildImage(params.IMAGE_VERSION)
+                }
+            }
+        }
+        stage('Login to Docker and Push Image') {
+            steps {
+                script {
+                   gv.loginAndpush(params.IMAGE_VERSION)
+                }
+            }
+        }
+        stage(name: 'deploy')
+        {
+            step{
+                echo(message: 'deploy')
+            }
+        }
     }
-    
     post {
         success {
-            // Actions to perform when the pipeline succeeds
-            echo 'Pipeline succeeded!'
+            echo 'Image build and push succeeded!'
         }
         failure {
-            // Actions to perform when the pipeline fails
-            echo 'Pipeline failed!'
+            echo 'Image build and push failed!'
         }
     }
 }
