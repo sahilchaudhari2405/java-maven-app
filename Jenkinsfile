@@ -1,23 +1,39 @@
+CODE_CHANGES = getGitChanges()
+
 pipeline {
     agent any
-    
+    tools{
+        maven 'Maven'
+    } 
     stages {
-        stage('Build') {
+        stage('Build-jar') {
             steps {
-              echo 'build'
+                script {
+                    echo(message: 'build application ')
+                    sh 'mvn package'
+                }
             }
-        }
-        stage('Test') {
+        } 
+            stage('Build image') {
             steps {
-                // Your test steps here
-               echo 'test'
+                script {
+                    echo(message: 'docker image')
+                   withCredentials([usernamePassword(credentialsId: 'docker-repo', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                      sh(script: 'docker build -t sahilchaudhari2405/my-repo/:jma-2.1 .') 
+                      sh(script: "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}")
+                      sh(script: 'docker push sahilchaudhari2405/my-repo/:jma-2.1')
+                    } 
+                }
             }
-        }
-        stage('Deploy') {
+        } 
+         stage('deploy') {
             steps {
-               echo 'deploy'
+                script {
+                    echo(message: 'deploy')
+                }
             }
-        }
+         }
+
     }
     
     post {
