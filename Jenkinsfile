@@ -54,7 +54,9 @@
 def gv
 pipeline {
     agent any
-    tool(name: 'Maven')
+    tools{
+        maven 'Maven'
+    }
     parameters {
         string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
     }
