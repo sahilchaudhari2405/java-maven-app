@@ -6,8 +6,13 @@ pipeline {
         string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
     }
     stages {
-        stage('Load') {
-            code = load 'script.groovy'
+        stage('init') {
+            steps {
+                script
+                {
+                    code = load "script.groovy"
+                }
+            }
         }
         stage('Build package') {
             steps {
