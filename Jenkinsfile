@@ -5,7 +5,7 @@ pipeline {
         string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
     }
     stages {
-        stage(name: 'init')
+        stage('init')
         {
             step
             {
@@ -36,10 +36,10 @@ pipeline {
                 }
             }
         }
-        stage(name: 'deploy')
+        stage('deploy')
         {
             step{
-                echo(message: 'deploy')
+                echo 'deploy'
             }
         }
     }
