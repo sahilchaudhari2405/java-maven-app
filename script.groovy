@@ -1,16 +1,47 @@
-/* groovylint-disable-next-line FactoryMethodName */
-def buildJar() {
-    echo(message: 'build application ')
-    sh 'mvn package'
-}
-def buildImage(IMAGE_VERSION) {
-    echo "Building Docker image with version ${IMAGE_VERSION}"
-    sh "docker build -t sahilchaudhari2405/my-repo:${IMAGE_VERSION} ."
-}
-def loginAndpush(IMAGE_VERSION) {
-    echo 'Logging in to Docker'
-    withCredentials([usernamePassword(credentialsId: 'docker-repo', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-        sh "docker push sahilchaudhari2405/my-repo:${IMAGE_VERSION}"
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build Jar') {
+            steps {
+                script {
+                    echo 'Building application jar...'
+                    buildJar()
+                }
+            }
+        }
+        
+        stage('Build Docker Image') {
+            parameters {
+                string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
+            }
+            steps {
+                script {
+                    echo "Building Docker image with version ${params.IMAGE_VERSION}..."
+                    buildImage(params.IMAGE_VERSION)
+                }
+            }
+        }
+        
+        stage('Push Docker Image') {
+            parameters {
+                string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
+            }
+            steps {
+                script {
+                    echo "Pushing Docker image with version ${params.IMAGE_VERSION}..."
+                    loginAndpush(params.IMAGE_VERSION)
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
     }
 }
