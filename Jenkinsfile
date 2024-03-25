@@ -5,13 +5,10 @@ pipeline {
         string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
     }
     stages {
-        stage('init')
-        {
-            step
-            {
-                script
-                {
-                    gv = load(path: 'script.groovy')
+         stage('init') {
+            steps {
+                script {
+                    gv = load 'script.groovy'
                 }
             }
         }
@@ -39,7 +36,10 @@ pipeline {
         stage('deploy')
         {
             step{
-                echo 'deploy'
+               script
+               {
+                 echo 'deploy'
+               }
             }
         }
     }
