@@ -5,7 +5,7 @@ pipeline {
         maven 'Maven'
     }
     parameters {
-        string( description: 'Custom versions for the image', name: 'IMAGE_VERSION')
+        string( description: 'Custom version for the image', name: 'IMAGE_VERSION')
     }
 
     stages {
