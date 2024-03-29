@@ -4,7 +4,7 @@ def buildApp() {
 } 
 def buildImage(IMAGE_VERSION,IMAGE_NAME) {
     echo "build image"
-    sh "docker build -t sahilchaudhari2405/${IMAGE_NAME}:${IMAGE_VERSION} ."
+    sh "docker build -t 159.89.174.141:8083/${IMAGE_NAME}:${IMAGE_VERSION} ."
     }
 def deployApp(IMAGE_VERSION,IMAGE_NAME) {
     echo "deploying the ${IMAGE_VERSION}"
