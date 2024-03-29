@@ -27,7 +27,7 @@ pipeline {
             when{
                 expression
                 {
-                    BRANCH_NAME == 'master'
+                    BRANCH_NAME == 'master' ||  BRANCH_NAME == 'nexus'
                 }
             }
             steps {
@@ -40,7 +40,7 @@ pipeline {
              when{
                 expression
                 {
-                    BRANCH_NAME == 'master'
+                     BRANCH_NAME == 'master' ||  BRANCH_NAME == 'nexus'
                 }
             }
             steps {
