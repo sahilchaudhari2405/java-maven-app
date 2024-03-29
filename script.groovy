@@ -8,7 +8,7 @@ def buildImage(IMAGE_VERSION) {
     }
 def deployApp(IMAGE_VERSION) {
     echo "deploying the ${IMAGE_VERSION}"
-    withCredentials([usernamePassword(credentialsId: 'docker-repo', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+    withCredentials([usernamePassword(credentialsId: 'nexus-docker-repo', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
         sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} 159.89.174.141:8083"
         sh "docker push 159.89.174.141:8083/java-mevan-app:${IMAGE_VERSION}"
     }
