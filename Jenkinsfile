@@ -5,7 +5,9 @@ pipeline {
         maven 'Maven'
     }
     parameters {
-        string(defaultValue: '1.0', description: 'Custom version for the image', name: 'IMAGE_VERSION')
+        string(defaultValue: '1.2', description: 'Custom version for the image', name: 'IMAGE_VERSION')
+         string(defaultValue: 'name', description: 'name of repo or tag', name: 'IMAGE_NAME')
+
     }
 
     stages {
@@ -32,7 +34,7 @@ pipeline {
             }
             steps {
                 script {
-                    gv.buildImage(params.IMAGE_VERSION)
+                    gv.buildImage(params.IMAGE_VERSION,params.IMAGE_NAME)
                 }
             }
         }
@@ -45,7 +47,7 @@ pipeline {
             }
             steps {
                 script {
-                    gv.deployApp(params.IMAGE_VERSION)
+                    gv.deployApp(params.IMAGE_VERSION,params.IMAGE_NAME)
                 }
             }
         }
