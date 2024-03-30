@@ -3,7 +3,7 @@ def buildApp() {
     sh 'mvn package'
 } 
 def buildImage(IMAGE_VERSION,IMAGE_NAME) {
-    echo "build image"
+    echo "build images"
     sh "docker build -t 159.89.174.141:8083/${IMAGE_NAME}:${IMAGE_VERSION} ."
     }
 def deployApp(IMAGE_VERSION,IMAGE_NAME) {
